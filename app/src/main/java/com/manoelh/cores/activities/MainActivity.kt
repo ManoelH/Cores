@@ -19,6 +19,7 @@ import retrofit2.Response
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private var mCores: Cores = Cores(arrayListOf())
+    private val NUMERO_UM = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +51,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     if (respostaServidor != null) {
                         mCores = respostaServidor
                         inicializaRecyclerView()
-                        constroiToast("Dados carregado com sucesso: ${mCores.result.size}")
+                       // constroiToast("Dados carregado com sucesso: ${mCores.result.size}")
+                        filtraQuantidadeDeCoresRepetidas()
                     }
                     else {
                         constroiToast("Resposta nula do servidor")
@@ -73,6 +75,18 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private fun inicializaRecyclerView() {
         recyclerView.adapter = ListaDeCoresAdapter(mCores.result)
         recyclerView.layoutManager = LinearLayoutManager(this)
+    }
+
+    private fun filtraQuantidadeDeCoresRepetidas(){
+        val numeroDeCoresUnicas: MutableList<String> = arrayListOf()
+        if (mCores.result.isNotEmpty()) {
+            mCores.result.forEach {
+                if (!numeroDeCoresUnicas.contains(it))
+                    numeroDeCoresUnicas.add(it)
+            }
+            if(numeroDeCoresUnicas.size > NUMERO_UM)
+                textViewQuantidadeDeCores.text = "${numeroDeCoresUnicas.size} ${getString(R.string.cores_unicas)}"
+        }
     }
 
     private fun constroiToast(message: String){
