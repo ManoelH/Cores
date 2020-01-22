@@ -1,11 +1,12 @@
 package com.manoelh.cores.activities
 
 import android.os.Bundle
-import android.os.StrictMode
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.manoelh.cores.R
+import com.manoelh.cores.adapter.ListaDeCoresAdapter
 import com.manoelh.cores.model.Cores
 import com.manoelh.cores.service.ServiceGenerator
 import com.manoelh.cores.service.RetrofitService
@@ -17,43 +18,39 @@ import retrofit2.Response
 
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
+    private var mCores: Cores = Cores(arrayListOf())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         adicionaEventosListeners()
-        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
-        StrictMode.setThreadPolicy(policy)
-        carregarCores()
+        buscaCoresDaAPI()
     }
 
     private fun adicionaEventosListeners(){
         imageViewRecarregarCores.setOnClickListener(this)
     }
 
-    override fun onClick(v: View) {
-        when(v.id){
-            R.id.imageViewRecarregarCores -> carregarCores()
+    override fun onClick(view: View) {
+        when(view.id){
+            R.id.imageViewRecarregarCores -> buscaCoresDaAPI()
         }
     }
 
-    private fun carregarCores(){
-        retrofitConverter()
-    }
-
-    fun retrofitConverter() {
+    fun buscaCoresDaAPI() {
         val service: RetrofitService = ServiceGenerator.createService(RetrofitService::class.java)
         val result: MutableList<String> = arrayListOf()
         val call: Call<Cores?>? = service.converterUnidade(result)
-
         call?.enqueue(object : Callback<Cores?> {
             override fun onResponse(call: Call<Cores?>?, response: Response<Cores?>) {
 
                 if (response.isSuccessful) {
                     val respostaServidor: Cores? = response.body()
-                    //verifica aqui se o corpo da resposta não é nulo
+
                     if (respostaServidor != null) {
-                        val cores = respostaServidor
+                        mCores = respostaServidor
+                        inicializaRecyclerView()
+                        constroiToast("Dados carregado com sucesso: ${mCores.result.size}")
                     }
                     else {
                         constroiToast("Resposta nula do servidor")
@@ -71,6 +68,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 constroiToast("Erro na chamada ao servidor")
             }
         })
+    }
+
+    private fun inicializaRecyclerView() {
+        recyclerView.adapter = ListaDeCoresAdapter(mCores.result)
+        recyclerView.layoutManager = LinearLayoutManager(this)
     }
 
     private fun constroiToast(message: String){
