@@ -1,9 +1,13 @@
 package com.manoelh.cores.activities
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.view.WindowManager
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.manoelh.cores.R
 import com.manoelh.cores.adapter.ListaDeCoresAdapter
@@ -17,6 +21,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 private const val NUMERO_UM = 1
+private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private var mCores: Cores = Cores(arrayListOf())
@@ -44,7 +49,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         val call: Call<Cores?>? = service.converterUnidade(result)
         call?.enqueue(object : Callback<Cores?> {
             override fun onResponse(call: Call<Cores?>?, response: Response<Cores?>) {
-
+            alteraEstadoDaTelaPermitindoOuNaoAhInteracaoDoUsuarioEnquantoAPIEhRequisitada()
                 if (response.isSuccessful) {
                     val respostaServidor: Cores? = response.body()
 
@@ -54,21 +59,22 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                         filtraQuantidadeDeCoresUnicas(mCores.result)
                     }
                     else {
-                        constroiToast("Resposta nula do servidor")
+                        constroiToast(getString(R.string.resposta_nula_do_servidor))
                     }
                 }
 
                 else {
-                    constroiToast("Resposta não foi sucesso")
-                    // segura os erros de requisição
+                    constroiToast(getString(R.string.resposta_mal_sucedida))
                     val errorBody: ResponseBody = response.errorBody()
+                    Log.e(TAG, errorBody.toString())
                 }
             }
 
             override fun onFailure(call: Call<Cores?>?, t: Throwable?) {
-                constroiToast("Erro na chamada ao servidor")
+                constroiToast(getString(R.string.erro_chamada_de_servidor))
             }
         })
+        alteraEstadoDaTelaPermitindoOuNaoAhInteracaoDoUsuarioEnquantoAPIEhRequisitada()
     }
 
     private fun inicializaRecyclerView() {
@@ -95,5 +101,18 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun constroiToast(message: String){
         Toast.makeText(applicationContext, message, Toast.LENGTH_LONG).show()
+    }
+
+    private fun alteraEstadoDaTelaPermitindoOuNaoAhInteracaoDoUsuarioEnquantoAPIEhRequisitada(){
+        if (progressBar.isVisible) {
+            progressBar.visibility = ProgressBar.INVISIBLE
+            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        }
+        else{
+            progressBar.visibility = ProgressBar.VISIBLE
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        }
     }
 }

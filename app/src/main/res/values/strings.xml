@@ -5,4 +5,10 @@
     <!--TEXTOS-->
     <string name="cor_unica_valor_padrao">1 cor única</string>
     <string name="cores_unicas">cores únicas</string>
+
+    <!--MENSAGENS DE ERRO-->
+    <string name="resposta_nula_do_servidor">Resposta nula do servidor</string>
+    <string name="resposta_mal_sucedida">Resposta não foi sucesso</string>
+    <string name="erro_chamada_de_servidor">Erro na chamada ao servidor</string>
+
 </resources>
