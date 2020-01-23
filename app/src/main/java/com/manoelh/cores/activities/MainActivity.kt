@@ -89,14 +89,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 if (!numeroDeCoresUnicas.contains(it))
                     numeroDeCoresUnicas.add(it)
             }
-            setaTextViewComQuantidadeDeCoresUnicasEncontradas(numeroDeCoresUnicas)
+            setaTextViewComQuantidadeDeCoresUnicasEncontradas(numeroDeCoresUnicas.size)
         }
     }
 
-    private fun setaTextViewComQuantidadeDeCoresUnicasEncontradas(numeroDeCoresUnicas: MutableList<String>) {
-        if (numeroDeCoresUnicas.size > NUMERO_UM)
-            textViewQuantidadeDeCores.text =
-                "${numeroDeCoresUnicas.size} ${getString(R.string.cores_unicas)}"
+    private fun setaTextViewComQuantidadeDeCoresUnicasEncontradas(quantidadeDeCoresUnicas: Int) {
+        if (quantidadeDeCoresUnicas > NUMERO_UM)
+            textViewQuantidadeDeCores.text = "$quantidadeDeCoresUnicas ${getString(R.string.cores_unicas)}"
+        else
+            textViewQuantidadeDeCores.text = getString(R.string.cor_unica_valor_padrao)
     }
 
     private fun constroiToast(message: String){
@@ -108,7 +109,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             progressBar.visibility = ProgressBar.INVISIBLE
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         }
-        else{
+        else {
             progressBar.visibility = ProgressBar.VISIBLE
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
