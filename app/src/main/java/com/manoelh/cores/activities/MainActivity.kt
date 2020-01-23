@@ -16,10 +16,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+private const val NUMERO_UM = 1
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private var mCores: Cores = Cores(arrayListOf())
-    private val NUMERO_UM = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,8 +51,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     if (respostaServidor != null) {
                         mCores = respostaServidor
                         inicializaRecyclerView()
-                       // constroiToast("Dados carregado com sucesso: ${mCores.result.size}")
-                        filtraQuantidadeDeCoresRepetidas()
+                        filtraQuantidadeDeCoresUnicas(mCores.result)
                     }
                     else {
                         constroiToast("Resposta nula do servidor")
@@ -77,16 +76,21 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         recyclerView.layoutManager = LinearLayoutManager(this)
     }
 
-    private fun filtraQuantidadeDeCoresRepetidas(){
+    private fun filtraQuantidadeDeCoresUnicas(cores: MutableList<String>){
         val numeroDeCoresUnicas: MutableList<String> = arrayListOf()
-        if (mCores.result.isNotEmpty()) {
-            mCores.result.forEach {
+        if (cores.isNotEmpty()) {
+            cores.forEach {
                 if (!numeroDeCoresUnicas.contains(it))
                     numeroDeCoresUnicas.add(it)
             }
-            if(numeroDeCoresUnicas.size > NUMERO_UM)
-                textViewQuantidadeDeCores.text = "${numeroDeCoresUnicas.size} ${getString(R.string.cores_unicas)}"
+            setaTextViewComQuantidadeDeCoresUnicasEncontradas(numeroDeCoresUnicas)
         }
+    }
+
+    private fun setaTextViewComQuantidadeDeCoresUnicasEncontradas(numeroDeCoresUnicas: MutableList<String>) {
+        if (numeroDeCoresUnicas.size > NUMERO_UM)
+            textViewQuantidadeDeCores.text =
+                "${numeroDeCoresUnicas.size} ${getString(R.string.cores_unicas)}"
     }
 
     private fun constroiToast(message: String){

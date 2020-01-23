@@ -1,6 +1,6 @@
 package com.manoelh.cores.constants
 
-class WebServiceConstatans private constructor(){
+class WebServiceConstantes private constructor(){
 
     companion object{
             val URL = ""
