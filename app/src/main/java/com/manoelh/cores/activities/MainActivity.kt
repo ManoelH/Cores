@@ -72,6 +72,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
             override fun onFailure(call: Call<Cores?>?, t: Throwable?) {
                 constroiToast(getString(R.string.erro_chamada_de_servidor))
+                Log.e(TAG, t?.message)
             }
         })
         alteraEstadoDaTelaPermitindoOuNaoAhInteracaoDoUsuarioEnquantoAPIEhRequisitada()

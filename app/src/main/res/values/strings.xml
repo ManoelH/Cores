@@ -7,7 +7,7 @@
     <string name="cores_unicas">cores únicas</string>
 
     <!--MENSAGENS DE ERRO-->
-    <string name="resposta_nula_do_servidor">Resposta nula do servidor</string>
+    <string name="resposta_nula_do_servidor">Resposta nula do servidor tente novamente</string>
     <string name="resposta_mal_sucedida">Resposta não foi sucesso</string>
     <string name="erro_chamada_de_servidor">Erro na chamada ao servidor</string>
 
