@@ -1,6 +1,6 @@
 package com.manoelh.cores.service
 
-import com.manoelh.cores.model.Cores
+import com.manoelh.cores.model.Colors
 import retrofit2.Call
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -15,5 +15,5 @@ interface RetrofitService {
             "Content-Type: application/json")
     @FormUrlEncoded
     @POST("colors")
-    fun converterUnidade(@Field("result") result: MutableList<String>?): Call<Cores?>?
+    fun converterUnidade(@Field("result") result: MutableList<String>?): Call<Colors?>?
 }

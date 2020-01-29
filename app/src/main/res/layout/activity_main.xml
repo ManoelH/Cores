@@ -7,11 +7,11 @@
     tools:context=".activities.MainActivity">
 
     <TextView
-        android:id="@+id/textViewQuantidadeDeCores"
+        android:id="@+id/textViewColors"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="@string/cor_unica_valor_padrao"
+        android:text="@string/cor_unique_default_value"
         android:textSize="24sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintHorizontal_bias="0.117"
@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageViewRecarregarCores"
+        android:id="@+id/imageViewRefreshColors"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginTop="24dp"

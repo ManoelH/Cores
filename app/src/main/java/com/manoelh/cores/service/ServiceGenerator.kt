@@ -1,7 +1,7 @@
 package com.manoelh.cores.service
 
 import com.google.gson.Gson
-import com.manoelh.cores.constants.WebServiceConstantes
+import com.manoelh.cores.constants.WebServiceConstants
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
 class ServiceGenerator{
 
     companion object {
-        val API_BASE_URL = WebServiceConstantes.URL
+        val API_BASE_URL = WebServiceConstants.URL
 
         fun <S> createService(serviceClass: Class<S>?): S {
             val loggingInterceptor = HttpLoggingInterceptor()

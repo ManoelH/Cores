@@ -6,30 +6,24 @@ import org.junit.Test
 class MainActivityTest {
 
     @Test
-    fun `verifica se metodo esta retornando o valor correto de cores unicas`(){
-        val paremetros = arrayListOf("#ffffff", "#ffffff", "#1fffff")
-        Assert.assertEquals(filtraQuantidadeDeCoresUnicas(paremetros), 2)
+    fun `verify if method is returning the correct value of unique colors`(){
+        val parameters = arrayListOf("#ffffff", "#ffffff", "#1fffff")
+        Assert.assertEquals(filterUniqueColors(parameters), 2)
     }
 
     @Test
-    fun `verifica se metodo que retorna cores unicas quebra com List vazio de cores`(){
-        val paremetros = arrayListOf<String>()
-        Assert.assertEquals(filtraQuantidadeDeCoresUnicas(paremetros), 0)
+    fun `verify if method that return unique colors break with empty list`(){
+        val parameters = arrayListOf<String>()
+        Assert.assertEquals(filterUniqueColors(parameters), 0)
     }
 
 
-    /*METODO COPIADO DA MAIN ACTIVITY PARA EVITAR O USO DO MESMO NA FORMA PUBLICA,
-       FOI TENTADA A UTILIZACAO DO JAVA REFLECTION MAS SEM EXITO*/
 
-    private fun filtraQuantidadeDeCoresUnicas(cores: MutableList<String>): Int{
-        val numeroDeCoresUnicas: MutableList<String> = arrayListOf()
+    private fun filterUniqueColors(cores: MutableList<String>): Int{
         if (cores.isNotEmpty()) {
-            cores.forEach {
-                if (!numeroDeCoresUnicas.contains(it))
-                    numeroDeCoresUnicas.add(it)
-            }
-            //setaTextViewComQuantidadeDeCoresUnicasEncontradas(numeroDeCoresUnicas.size)
+            val numberOfUniqueColors = cores.groupBy { it }.keys.size
+            return numberOfUniqueColors
         }
-        return numeroDeCoresUnicas.size
+        return 0
     }
 }

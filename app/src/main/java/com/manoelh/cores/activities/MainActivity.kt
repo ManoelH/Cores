@@ -10,8 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.manoelh.cores.R
-import com.manoelh.cores.adapter.ListaDeCoresAdapter
-import com.manoelh.cores.model.Cores
+import com.manoelh.cores.adapter.ColorsListAdapter
+import com.manoelh.cores.model.Colors
 import com.manoelh.cores.service.ServiceGenerator
 import com.manoelh.cores.service.RetrofitService
 import kotlinx.android.synthetic.main.activity_main.*
@@ -20,92 +20,88 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-private const val NUMERO_UM = 1
+private const val NUMBER_ONE = 1
 private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
-    private var mCores: Cores = Cores(arrayListOf())
+    private var mColors: Colors = Colors(arrayListOf())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        adicionaEventosListeners()
-        buscaCoresDaAPI()
+        addListeners()
+        searchColorFromAPI()
     }
 
-    private fun adicionaEventosListeners(){
-        imageViewRecarregarCores.setOnClickListener(this)
+    private fun addListeners(){
+        imageViewRefreshColors.setOnClickListener(this)
     }
 
     override fun onClick(view: View) {
         when(view.id){
-            R.id.imageViewRecarregarCores -> buscaCoresDaAPI()
+            R.id.imageViewRefreshColors -> searchColorFromAPI()
         }
     }
 
-    fun buscaCoresDaAPI() {
+    private fun searchColorFromAPI() {
         val service: RetrofitService = ServiceGenerator.createService(RetrofitService::class.java)
         val result: MutableList<String> = arrayListOf()
-        val call: Call<Cores?>? = service.converterUnidade(result)
-        call?.enqueue(object : Callback<Cores?> {
-            override fun onResponse(call: Call<Cores?>?, response: Response<Cores?>) {
-            alteraEstadoDaTelaPermitindoOuNaoAhInteracaoDoUsuarioEnquantoAPIEhRequisitada()
+        val call: Call<Colors?>? = service.converterUnidade(result)
+        call?.enqueue(object : Callback<Colors?> {
+            override fun onResponse(call: Call<Colors?>?, response: Response<Colors?>) {
+            switchProgressVisibility()
                 if (response.isSuccessful) {
-                    val respostaServidor: Cores? = response.body()
+                    val serviceResponse: Colors? = response.body()
 
-                    if (respostaServidor != null) {
-                        mCores = respostaServidor
-                        inicializaRecyclerView()
-                        filtraQuantidadeDeCoresUnicas(mCores.result)
+                    if (serviceResponse != null) {
+                        mColors = serviceResponse
+                        initializeRecyclerView()
+                        filterUniqueColors(mColors.result)
                     }
                     else {
-                        constroiToast(getString(R.string.resposta_nula_do_servidor))
+                        buildToast(getString(R.string.null_response))
                     }
                 }
 
                 else {
-                    constroiToast(getString(R.string.resposta_mal_sucedida))
+                    buildToast(getString(R.string.response_unsuccessful))
                     val errorBody: ResponseBody = response.errorBody()
                     Log.e(TAG, errorBody.toString())
                 }
             }
 
-            override fun onFailure(call: Call<Cores?>?, t: Throwable?) {
-                constroiToast(getString(R.string.erro_chamada_de_servidor))
+            override fun onFailure(call: Call<Colors?>?, t: Throwable?) {
+                buildToast(getString(R.string.error_calling_service))
                 Log.e(TAG, t?.message)
             }
         })
-        alteraEstadoDaTelaPermitindoOuNaoAhInteracaoDoUsuarioEnquantoAPIEhRequisitada()
+        switchProgressVisibility()
     }
 
-    private fun inicializaRecyclerView() {
-        recyclerView.adapter = ListaDeCoresAdapter(mCores.result)
+    private fun initializeRecyclerView() {
+        recyclerView.adapter = ColorsListAdapter(mColors.result)
         recyclerView.layoutManager = LinearLayoutManager(this)
     }
 
-    private fun filtraQuantidadeDeCoresUnicas(cores: MutableList<String>){
-        val numeroDeCoresUnicas: MutableList<String> = arrayListOf()
+    private fun filterUniqueColors(cores: MutableList<String>){
         if (cores.isNotEmpty()) {
-            cores.forEach {
-                if (!numeroDeCoresUnicas.contains(it))
-                    numeroDeCoresUnicas.add(it)
-            }
-            setaTextViewComQuantidadeDeCoresUnicasEncontradas(numeroDeCoresUnicas.size)
+            val numberOfUniqueColors = cores.groupBy { it }.keys.size
+            setTextViewWithColorsFound(numberOfUniqueColors)
         }
     }
 
-    private fun setaTextViewComQuantidadeDeCoresUnicasEncontradas(quantidadeDeCoresUnicas: Int) {
-        if (quantidadeDeCoresUnicas > NUMERO_UM)
-            textViewQuantidadeDeCores.text = "$quantidadeDeCoresUnicas ${getString(R.string.cores_unicas)}"
+    private fun setTextViewWithColorsFound(numberOfUniqueColors: Int) {
+        if (numberOfUniqueColors > NUMBER_ONE)
+            textViewColors.text = "$numberOfUniqueColors ${getString(R.string.unique_colors)}"
         else
-            textViewQuantidadeDeCores.text = getString(R.string.cor_unica_valor_padrao)
+            textViewColors.text = getString(R.string.cor_unique_default_value)
     }
 
-    private fun constroiToast(message: String){
+    private fun buildToast(message: String){
         Toast.makeText(applicationContext, message, Toast.LENGTH_LONG).show()
     }
 
-    private fun alteraEstadoDaTelaPermitindoOuNaoAhInteracaoDoUsuarioEnquantoAPIEhRequisitada(){
+    private fun switchProgressVisibility(){
         if (progressBar.isVisible) {
             progressBar.visibility = ProgressBar.INVISIBLE
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)

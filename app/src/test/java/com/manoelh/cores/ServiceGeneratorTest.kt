@@ -1,7 +1,7 @@
 package com.manoelh.cores
 
 import com.google.gson.Gson
-import com.manoelh.cores.constants.WebServiceConstantes
+import com.manoelh.cores.constants.WebServiceConstants
 import com.manoelh.cores.service.RetrofitService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -28,7 +28,7 @@ class ServiceGeneratorTest {
         httpClient.addInterceptor(loggingInterceptor)
 
         val retrofitService = Retrofit.Builder()
-            .baseUrl(mockWebServer.url(WebServiceConstantes.URL))
+            .baseUrl(mockWebServer.url(WebServiceConstants.URL))
             .addConverterFactory(GsonConverterFactory.create(Gson()))
             .client(httpClient.build())
             .build()
@@ -42,7 +42,7 @@ class ServiceGeneratorTest {
     }
 
     @Test
-    fun `testa se interface retrofitService eh construida antes de servir para conexao com api`() {
+    fun `test if retrofitService interface is built before to be used to api connection`() {
        val service: RetrofitService = createService(mockWebServer)
        Assert.assertNotEquals(service, null)
     }
