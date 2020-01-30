@@ -15,5 +15,5 @@ interface RetrofitService {
             "Content-Type: application/json")
     @FormUrlEncoded
     @POST("colors")
-    fun converterUnidade(@Field("result") result: MutableList<String>?): Call<Colors?>?
+    fun unityConverter(@Field("result") result: MutableList<String>?): Call<Colors?>?
 }

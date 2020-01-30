@@ -1,7 +1,6 @@
 package com.manoelh.cores.activities
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.ProgressBar
@@ -12,19 +11,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.manoelh.cores.R
 import com.manoelh.cores.adapter.ColorsListAdapter
 import com.manoelh.cores.model.Colors
-import com.manoelh.cores.service.ServiceGenerator
-import com.manoelh.cores.service.RetrofitService
+import com.manoelh.cores.service.ServiceRequest
 import kotlinx.android.synthetic.main.activity_main.*
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 private const val NUMBER_ONE = 1
-private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private var mColors: Colors = Colors(arrayListOf())
+    private val mServiceRequest = ServiceRequest()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,39 +37,25 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+
     private fun searchColorFromAPI() {
-        val service: RetrofitService = ServiceGenerator.createService(RetrofitService::class.java)
-        val result: MutableList<String> = arrayListOf()
-        val call: Call<Colors?>? = service.converterUnidade(result)
-        call?.enqueue(object : Callback<Colors?> {
-            override fun onResponse(call: Call<Colors?>?, response: Response<Colors?>) {
-            switchProgressVisibility()
-                if (response.isSuccessful) {
-                    val serviceResponse: Colors? = response.body()
-
-                    if (serviceResponse != null) {
-                        mColors = serviceResponse
-                        initializeRecyclerView()
-                        filterUniqueColors(mColors.result)
-                    }
-                    else {
-                        buildToast(getString(R.string.null_response))
-                    }
-                }
-
-                else {
-                    buildToast(getString(R.string.response_unsuccessful))
-                    val errorBody: ResponseBody = response.errorBody()
-                    Log.e(TAG, errorBody.toString())
-                }
-            }
-
-            override fun onFailure(call: Call<Colors?>?, t: Throwable?) {
-                buildToast(getString(R.string.error_calling_service))
-                Log.e(TAG, t?.message)
-            }
-        })
         switchProgressVisibility()
+        val colors: Colors? = Colors(arrayListOf())
+        mServiceRequest.searchColorFromAPI(apiCallback(colors))
+    }
+
+    private fun apiCallback(colors: Colors?): (Colors?) -> Unit {
+        return {
+            if(it == null)
+                buildToast(getString(R.string.response_unsuccessful))
+
+            else{
+                mColors = it
+                initializeRecyclerView()
+                filterUniqueColors(mColors.result)
+                switchProgressVisibility()
+            }
+        }
     }
 
     private fun initializeRecyclerView() {

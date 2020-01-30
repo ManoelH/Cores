@@ -9,6 +9,5 @@
     <!--MENSAGENS DE ERRO-->
     <string name="null_response">Resposta nula do servidor tente novamente</string>
     <string name="response_unsuccessful">Resposta não foi sucesso</string>
-    <string name="error_calling_service">Erro na chamada ao servidor</string>
 
 </resources>
