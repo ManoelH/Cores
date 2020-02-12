@@ -8,7 +8,8 @@ returned from a API, to show the colors in a ReciclerView and showing how many r
 
 # Working
 In start app, it does a request automatically and when the "refresh" button is clicked a new request is done
-to the API, the amount of colors change in each request.
+to the API, the amount of colors change in each request. If you want seeing the app working click
+<a href="https://drive.google.com/open?id=1GleuplD_RCtW3wT-562Yg5YVdPgJsJ6e">Here</a>
 
 # API Acess
 * The acess was done using Retrofit
